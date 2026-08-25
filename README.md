@@ -141,3 +141,27 @@ This step establishes central operational observability across the Landing Zone 
   * **Log Analytics Workspace Name:** `sovereign-law`
   * **Location:** `uksouth` (Inherited via `var.allowed_locations[0]`)
   * **Retention:** 30 Days
+
+---
+
+## Step 6: Core Connectivity & Hub Networking
+
+This step establishes the central Hub Virtual Network (VNet) topology for network control and perimeter security. It provisions structured subnets reserved for central traffic routing, remote access gateways, firewall services, and network security policies.
+
+### Core Networking Components
+
+* **Hub Resource Group (`sovereign-network-rg`):** Holds all central networking and security infrastructure assets.
+* **Hub Virtual Network (`sovereign-hub-vnet`):** Primary network infrastructure provisioned with address space `10.0.0.0/16`.
+* **Dedicated Subnets:**
+  * **`ManagementSubnet` (`10.0.1.0/24`):** Hosts shared internal management workloads and administrative services.
+  * **`AzureFirewallSubnet` (`10.0.2.0/24`):** Reserved subnet for central packet filtering and Azure Firewall deployment.
+  * **`GatewaySubnet` (`10.0.3.0/24`):** Reserved subnet for VPN / ExpressRoute gateways.
+* **Network Security Group (`sovereign-hub-nsg`):** Applied directly to `ManagementSubnet` to enforce inbound/outbound security rules.
+
+---
+
+### Implementation Details
+
+* **`network.tf`** — Configures the Hub VNet, explicit reserved subnets, NSG, and subnet associations using standard AzureRM resources.
+* **Subnet Naming Enforcement:** `AzureFirewallSubnet` and `GatewaySubnet` use strict system-required naming conventions for native Azure service integration.
+
