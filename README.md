@@ -96,3 +96,25 @@ During deployment, hardcoding the raw Azure policy definition ID string triggere
 
 * **Solution:** Replaced the hardcoded string path with a dynamic Terraform data source (`data "azurerm_policy_definition" "allowed_locations"`). This dynamically looks up the built-in policy by its display name and retrieves the fully qualified Azure Resource ID, resolving the deployment error.
 
+---
+
+## Step 4: Access Control & Role Assignments (RBAC Setup)
+
+This step establishes identity and access management (IAM) across the management group hierarchy using Role-Based Access Control (RBAC). It enforces the principle of least privilege by scoping administrative roles directly to relevant management groups rather than granting broad subscriptions permissions.
+
+### Core Roles Enforced
+
+* **Reader (Root Scope):** Provides global read-only access inherited across all child management groups for auditing and compliance monitoring.
+* **Network Contributor (Connectivity Scope):** Scopes networking permissions exclusively to `sovereign-connectivity` for virtual networks, firewalls, and routing control.
+* **Security Admin (Management Scope):** Scopes security operations permissions to `sovereign-management` for Log Analytics and Microsoft Sentinel administration.
+
+---
+
+### Implementation Details
+
+* **`rbac.tf`** — Uses `azurerm_client_config` to identify the active execution context and binds roles across management group targets via `azurerm_role_assignment`.
+* **Scope Targeting:**
+  * **Global:** `sovereign-root` → `Reader`
+  * **Platform / Network:** `sovereign-connectivity` → `Network Contributor`
+  * **Platform / Ops:** `sovereign-management` → `Security Admin`
+* **Inheritance:** Roles applied at higher management group levels automatically cascade to child subscriptions added in future steps.

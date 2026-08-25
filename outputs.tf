@@ -1,14 +1,21 @@
+# Output Management Group IDs
 output "root_management_group_id" {
-  value       = azurerm_management_group.root.id
-  description = "The ID of the Top-Level Root Management Group."
+  description = "The ID of the Root Management Group"
+  value       = data.azurerm_management_group.root.id
 }
 
-output "platform_management_group_id" {
-  value       = azurerm_management_group.platform.id
-  description = "The ID of the Platform Management Group."
+output "connectivity_management_group_id" {
+  description = "The ID of the Connectivity Management Group"
+  value       = data.azurerm_management_group.connectivity.id
 }
 
-output "landing_zones_management_group_id" {
-  value       = azurerm_management_group.landing_zones.id
-  description = "The ID of the Landing Zones Management Group."
+output "management_management_group_id" {
+  description = "The ID of the Management Management Group"
+  value       = data.azurerm_management_group.management.id
+}
+
+# Output Active Caller Identity Details
+output "deployed_by_object_id" {
+  description = "The Object ID of the execution account assigned RBAC roles"
+  value       = data.azurerm_client_config.current.object_id
 }
