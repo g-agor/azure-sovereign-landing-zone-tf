@@ -26,6 +26,7 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 
 ### Architecture Overview
 
+     ```text
                      ┌────────────────────────────────┐
                      │     Tenant Root Group          │
                      └───────────────┬────────────────┘
