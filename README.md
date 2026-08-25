@@ -118,3 +118,26 @@ This step establishes identity and access management (IAM) across the management
   * **Platform / Network:** `sovereign-connectivity` → `Network Contributor`
   * **Platform / Ops:** `sovereign-management` → `Security Admin`
 * **Inheritance:** Roles applied at higher management group levels automatically cascade to child subscriptions added in future steps.
+
+---
+
+## Step 5: Shared Management Resources
+
+This step establishes central operational observability across the Landing Zone architecture. It provisions a shared resource group and deploys a central Log Analytics Workspace to collect diagnostic logs, audit events, and telemetry across all workloads.
+
+### Key Components
+
+* **Management Resource Group (`sovereign-mgmt-rg`):** Acts as the dedicated container for centralized operational tools and management assets.
+* **Log Analytics Workspace (`sovereign-law`):** Serves as the central logging hub configured with the `PerGB2018` SKU and a 30-day data retention policy.
+* **Compliance:** Enforces deployment within allowed UK sovereign regions inherited from Step 3 policy guardrails.
+
+---
+
+### Implementation Details
+
+* **`management.tf`** — Defines the resource group and central Log Analytics Workspace using standard AzureRM provider resources.
+* **Configuration Parameters:**
+  * **Resource Group Name:** `sovereign-mgmt-rg`
+  * **Log Analytics Workspace Name:** `sovereign-law`
+  * **Location:** `uksouth` (Inherited via `var.allowed_locations[0]`)
+  * **Retention:** 30 Days
