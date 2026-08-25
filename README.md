@@ -26,7 +26,6 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 
 ### Architecture Overview
 
-```text
                      ┌────────────────────────────────┐
                      │     Tenant Root Group          │
                      └───────────────┬────────────────┘
@@ -52,13 +51,11 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 
 ### Hierarchy Breakdown
 
-| Tier | Group Name | Resource ID | Primary Purpose |
-| :--- | :--- | :--- | :--- |
-| **Root** | Top-Level Root | `sovereign-root` | Top-level entry point; global security guardrails inherit to all child environments. |
-| **Platform** | Platform | `sovereign-platform` | Parent container for centralized IT infrastructure and shared governance services. |
-| **Platform Sub** | Connectivity | `sovereign-connectivity` | Hub-and-Spoke networks, ExpressRoute circuits, and perimeter firewalls. |
-| **Platform Sub** | Identity | `sovereign-identity` | Active Directory Domain Services, Key Vaults, and privilege management. |
-| **Platform Sub** | Management | `sovereign-management` | Centralized Log Analytics, Microsoft Sentinel, and backup vaults. |
-| **Landing Zone** | Landing Zones | `sovereign-landing-zones` | Parent container designated for business application workloads. |
-| **Landing Zone** | Production | `sovereign-production` | Live application environments enforcing strict sovereign compliance standards. |
-| **Sandbox** | Decommissioned | `sovereign-decommissioned` | Quarantined zone for legacy or retired subscriptions awaiting cleanup. |
+* **Top-Level Root (`sovereign-root`):** The primary organizational root for the sovereign landing zone footprint. Security guardrails applied here inherit down to all child environments.
+* **Platform (`sovereign-platform`):** Houses core shared services managed by central IT and platform teams:
+  * **Connectivity (`sovereign-connectivity`):** Virtual WAN / Hub-and-Spoke networks, ExpressRoute, and central firewalls.
+  * **Identity (`sovereign-identity`):** Active Directory Domain Services, Key Vaults, and identity governance tools.
+  * **Management (`sovereign-management`):** Centralized Log Analytics workspaces, Microsoft Sentinel, and backup vaults.
+* **Landing Zones (`sovereign-landing-zones`):** Parent container for customer application workloads.
+  * **Production Workloads (`sovereign-production`):** Enforces high-assurance sovereign compliance rules for live business applications and data.
+* **Decommissioned (`sovereign-decommissioned`):** Quarantined zone for legacy subscriptions pending full deletion.
