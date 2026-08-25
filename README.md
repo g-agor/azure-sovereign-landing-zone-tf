@@ -72,3 +72,27 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 * **Decommissioned (`sovereign-decommissioned`)**
   Quarantined zone for legacy or retired subscriptions awaiting cleanup.
 
+---
+
+## Step 3: Governance & Policy Guardrails (Sovereign Controls)
+
+This step establishes automated compliance guardrails across the management group hierarchy. By applying policy assignments directly at the **UK Sovereign Root** level, every child subscription and workload automatically inherits these sovereign security standards.
+
+### Core Policies Enforced
+
+* **Allowed Locations (Region Locking):** Restricts all resource deployments strictly to approved UK regions (`UK South` and `UK West`) to guarantee sovereign data residency.
+* **Audit Compliance:** Evaluates all existing and future infrastructure against Microsoft sovereign landing zone guardrails.
+
+---
+
+### Implementation Details & Challenge Faced
+
+* **`policies.tf`** — Uses the `azurerm_policy_definition` data source to fetch the built-in Azure "Allowed locations" policy and binds it to the root management group via `azurerm_management_group_policy_assignment`.
+* **`variables.tf`** — Parameterizes allowed locations to default to `["uksouth", "ukwest"]`.
+* **Inheritance Scope:** Applied at the root level so Platform, Landing Zones, and sub-groups inherit constraints without requiring duplicate policy setups.
+
+#### Challenge Faced: Hardcoded Policy Definition ID Error
+During deployment, hardcoding the raw Azure policy definition ID string triggered a `400 Bad Request (PolicyDefinitionNotFound)` error because the path could not be resolved by the provider API.
+
+* **Solution:** Replaced the hardcoded string path with a dynamic Terraform data source (`data "azurerm_policy_definition" "allowed_locations"`). This dynamically looks up the built-in policy by its display name and retrieves the fully qualified Azure Resource ID, resolving the deployment error.
+
