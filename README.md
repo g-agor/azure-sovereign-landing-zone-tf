@@ -20,7 +20,6 @@ Sovereign/High Assurance Azure Landing Zone following Microsoft Cloud Adoption F
 * **Resolution & Architectural Takeaway:** Standardized code layout by breaking out modular file responsibilities. Created a dedicated `backend.tf` file containing the `terraform { backend "azurerm" { ... } }` declaration, keeping `versions.tf` focused exclusively on provider constraints. Re-initialized Terraform (`terraform init`) to successfully migrate state to remote Azure Blob Storage with locking enabled.
 ---
 
-Markdown
 ---
 
 ## Step 2: Management Group Hierarchy (CAF Alignment)
@@ -50,13 +49,26 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 ┌▼─────────┐┌▼────────┐┌▼─────┐│ Production│
 │Connectiv.││Identity ││Mgmt  │└───────────┘
 └──────────┘└─────────┘└──────┘
-Hierarchy Breakdown
-Tier	Group Name	Resource ID	Primary Purpose
-Root	Top-Level Root	sovereign-root	Top-level entry point; global security guardrails inherit to all child environments.
-Platform	Platform	sovereign-platform	Parent container for centralized IT infrastructure and shared governance services.
-Platform Sub	Connectivity	sovereign-connectivity	Hub-and-Spoke networks, ExpressRoute circuits, and perimeter firewalls.
-Platform Sub	Identity	sovereign-identity	Active Directory Domain Services, Key Vaults, and privilege management.
-Platform Sub	Management	sovereign-management	Centralized Log Analytics, Microsoft Sentinel, and backup vaults.
-Landing Zone	Landing Zones	sovereign-landing-zones	Parent container designated for business application workloads.
-Landing Zone	Production	sovereign-production	Live application environments enforcing strict sovereign compliance standards.
-Sandbox	Decommissioned	sovereign-decommissioned	Quarantined zone for legacy or retired subscriptions awaiting cleanup.
+
+
+```
+---
+
+### Hierarchy Breakdown
+
+* **Top-Level Root (`sovereign-root`)**
+  Top-level entry point. Global security guardrails inherit from here down to all child environments.
+
+* **Platform (`sovereign-platform`)**
+  Parent container for centralized IT infrastructure and shared governance services.
+  * **Connectivity (`sovereign-connectivity`):** Virtual WAN / Hub-and-Spoke networks, ExpressRoute, and central firewalls.
+  * **Identity (`sovereign-identity`):** Active Directory Domain Services, Key Vaults, and privilege management.
+  * **Management (`sovereign-management`):** Centralized Log Analytics workspaces, Microsoft Sentinel, and backup vaults.
+
+* **Landing Zones (`sovereign-landing-zones`)**
+  Parent container designated for business application workloads.
+  * **Production Workloads (`sovereign-production`):** Enforces high-assurance sovereign compliance rules for live business applications.
+
+* **Decommissioned (`sovereign-decommissioned`)**
+  Quarantined zone for legacy or retired subscriptions awaiting cleanup.
+
