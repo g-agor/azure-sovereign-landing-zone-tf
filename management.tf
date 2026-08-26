@@ -13,8 +13,4 @@ resource "azurerm_log_analytics_workspace" "central" {
   retention_in_days   = 30
 }
 
-resource "azurerm_resource_group" "management" {
-  name     = "${var.root_id}-mgmt-rg"
-  location = var.allowed_locations[0]
-  tags     = var.default_tags
-}
+
