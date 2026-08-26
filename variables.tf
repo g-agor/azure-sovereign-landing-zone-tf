@@ -19,7 +19,7 @@ variable "allowed_locations" {
 variable "default_tags" {
   type        = map(string)
   description = "Default enterprise tags applied to all landing zone resources."
-  default     = {
+  default = {
     Environment = "Production"
     CostCenter  = "CC-1092-IT"
     ManagedBy   = "Terraform"

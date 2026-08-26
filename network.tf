@@ -48,3 +48,9 @@ resource "azurerm_subnet_network_security_group_association" "mgmt_nsg_assoc" {
   subnet_id                 = azurerm_subnet.management.id
   network_security_group_id = azurerm_network_security_group.hub_nsg.id
 }
+
+resource "azurerm_resource_group" "network" {
+  name     = "${var.root_id}-network-rg"
+  location = var.allowed_locations[0]
+  tags     = var.default_tags
+}
