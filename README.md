@@ -74,22 +74,24 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 
 ---
 
-## Step 3: Governance & Policy Guardrails (Sovereign Controls)
 
-This step establishes automated compliance guardrails across the management group hierarchy. By applying policy assignments directly at the **UK Sovereign Root** level, every child subscription and workload automatically inherits these sovereign security standards.
+## Step 3: Governance & Policy Guardrails
 
-### Core Policies Enforced
+This step establishes automated Policy-as-Code guardrails applied at the root Management Group level (`sovereign-root`). It enforces strict compliance for physical data sovereignty (UK region locking) and mandates enterprise tag governance across all child management groups and subscriptions.
 
-* **Allowed Locations (Region Locking):** Restricts all resource deployments strictly to approved UK regions (`UK South` and `UK West`) to guarantee sovereign data residency.
-* **Audit Compliance:** Evaluates all existing and future infrastructure against Microsoft sovereign landing zone guardrails.
+### Key Governance Controls
 
+* **UK Sovereign Region Restriction (`allowed-locations-uk`):** Enforces data residency by restricting resource deployment exclusively to approved UK regions (`uksouth` and `ukwest`). Any attempt to deploy outside these locations is blocked by a `deny` policy effect.
+* **Mandatory Environment Tagging (`sovereign-require-env-tag`):** Implements a custom policy definition that denies the creation of any Azure resource lacking the required `Environment` tag.
+* **Enterprise Default Tags:** Standardizes resource metadata across all landing zone components using global Terraform variables (`Environment`, `CostCenter`, `ManagedBy`).
 ---
 
-### Implementation Details & Challenge Faced
+### Implementation Details
 
-* **`policies.tf`** — Uses the `azurerm_policy_definition` data source to fetch the built-in Azure "Allowed locations" policy and binds it to the root management group via `azurerm_management_group_policy_assignment`.
-* **`variables.tf`** — Parameterizes allowed locations to default to `["uksouth", "ukwest"]`.
-* **Inheritance Scope:** Applied at the root level so Platform, Landing Zones, and sub-groups inherit constraints without requiring duplicate policy setups.
+* **`policies.tf`** — Contains data lookups for the root management group, custom Azure Policy definitions, and management group policy assignments.
+* **`variables.tf`** — Defines `allowed_locations` (`["uksouth", "ukwest"]`) and `default_tags` applied to all managed resource groups.
+* **Policy Scoping:** Both policy assignments are targeted at `data.azurerm_management_group.root.id`, ensuring inherited enforcement across all child management groups (`connectivity`, `management`, `identity`, `landing-zones`).
+
 
 #### Challenge Faced: Hardcoded Policy Definition ID Error
 During deployment, hardcoding the raw Azure policy definition ID string triggered a `400 Bad Request (PolicyDefinitionNotFound)` error because the path could not be resolved by the provider API.
@@ -164,4 +166,26 @@ This step establishes the central Hub Virtual Network (VNet) topology for networ
 
 * **`network.tf`** — Configures the Hub VNet, explicit reserved subnets, NSG, and subnet associations using standard AzureRM resources.
 * **Subnet Naming Enforcement:** `AzureFirewallSubnet` and `GatewaySubnet` use strict system-required naming conventions for native Azure service integration.
+
+---
+
+## Step 7: Subscription Vending & Workload Landing Zone
+
+This step provisions the dedicated Workload Landing Zone for housing application workloads. It builds an isolated Virtual Network for applications and integrates it directly into the network hub via bi-directional VNet Peering, allowing centralized perimeter control while maintaining workload isolation.
+
+### Key Components
+
+* **Workload Resource Group (`sovereign-workload-rg`):** Holds application infrastructure and landing zone assets.
+* **Workload Virtual Network (`sovereign-workload-vnet`):** Provisioned with address space `10.1.0.0/16`.
+* **Application Subnet (`AppServicesSubnet`):** Dedicated `10.1.1.0/24` subnet for hosting core workload components.
+* **Bi-directional VNet Peering:**
+  * `peer-hub-to-workload` — Enables central hub to push traffic to the workload network.
+  * `peer-workload-to-hub` — Enables application workloads to route egress traffic back through the central hub perimeter.
+
+  ---
+
+### Implementation Details
+
+* **`landing_zones.tf`** — Configures the Workload Landing Zone resource group, application subnet, and bi-directional VNet peering to the central Hub VNet (`network.tf`).
+* **Tagging & Compliance:** Applies mandatory enterprise tags (`Environment`, `CostCenter`, `ManagedBy`) and strictly enforces regional deployment limits (`uksouth`).
 
