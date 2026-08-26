@@ -8,7 +8,7 @@ data "azurerm_policy_definition" "allowed_locations" {
   display_name = "Allowed locations"
 }
 
-# 1. Existing Policy Assignment: Restrict Allowed Locations to UK Regions
+# 1. Policy Assignment: Restrict Allowed Locations to UK Regions
 resource "azurerm_management_group_policy_assignment" "allowed_locations" {
   name                 = "allowed-locations-uk"
   management_group_id  = data.azurerm_management_group.root.id
@@ -23,13 +23,13 @@ resource "azurerm_management_group_policy_assignment" "allowed_locations" {
   })
 }
 
-# 2. Custom Policy Definition: Require Environment Tag
+# 2. Custom Policy Definition: Require Mandatory Enterprise Tags (In-Place Update)
 resource "azurerm_policy_definition" "require_tag_environment" {
   name                = "sovereign-require-env-tag"
   policy_type         = "Custom"
   mode                = "Indexed"
-  display_name        = "Require Environment Tag"
-  description         = "Denies creation of resources that lack the mandatory Environment tag."
+  display_name        = "Require Mandatory Enterprise Tags"
+  description         = "Denies creation of resources missing Environment, CostCenter, or ManagedBy tags."
   management_group_id = data.azurerm_management_group.root.id
 
   metadata = jsonencode({
@@ -38,8 +38,20 @@ resource "azurerm_policy_definition" "require_tag_environment" {
 
   policy_rule = jsonencode({
     if = {
-      field  = "tags['Environment']"
-      exists = "false"
+      anyOf = [
+        {
+          field  = "tags['Environment']"
+          exists = "false"
+        },
+        {
+          field  = "tags['CostCenter']"
+          exists = "false"
+        },
+        {
+          field  = "tags['ManagedBy']"
+          exists = "false"
+        }
+      ]
     }
     then = {
       effect = "deny"
@@ -47,10 +59,10 @@ resource "azurerm_policy_definition" "require_tag_environment" {
   })
 }
 
-# 3. Policy Assignment: Enforce Mandatory Tag at Sovereign Root
+# 3. Policy Assignment: Enforce Mandatory Tags at Sovereign Root
 resource "azurerm_management_group_policy_assignment" "require_env_tag" {
   name                 = "env-tag-assignment"
   management_group_id  = data.azurerm_management_group.root.id
   policy_definition_id = azurerm_policy_definition.require_tag_environment.id
-  display_name         = "Enforce Mandatory Environment Tag"
+  display_name         = "Enforce Mandatory Enterprise Tags"
 }

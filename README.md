@@ -75,22 +75,31 @@ This layer implements a multi-tier Azure Management Group structure aligned with
 ---
 
 
+
+
 ## Step 3: Governance & Policy Guardrails
 
-This step establishes automated Policy-as-Code guardrails applied at the root Management Group level (`sovereign-root`). It enforces strict compliance for physical data sovereignty (UK region locking) and mandates enterprise tag governance across all child management groups and subscriptions.
+This step establishes automated Policy-as-Code guardrails applied at the root Management Group level (`sovereign-root`). It enforces strict compliance for physical data sovereignty (UK region locking) and mandates comprehensive tag governance across all child management groups and workloads.
 
 ### Key Governance Controls
 
-* **UK Sovereign Region Restriction (`allowed-locations-uk`):** Enforces data residency by restricting resource deployment exclusively to approved UK regions (`uksouth` and `ukwest`). Any attempt to deploy outside these locations is blocked by a `deny` policy effect.
-* **Mandatory Environment Tagging (`sovereign-require-env-tag`):** Implements a custom policy definition that denies the creation of any Azure resource lacking the required `Environment` tag.
-* **Enterprise Default Tags:** Standardizes resource metadata across all landing zone components using global Terraform variables (`Environment`, `CostCenter`, `ManagedBy`).
+* **UK Sovereign Region Restriction (`allowed-locations-uk`):** Enforces data residency by restricting resource deployment exclusively to approved UK regions (`uksouth` and `ukwest`).
+* **Mandatory Enterprise Tags (`env-tag-assignment`):** Implements a custom policy definition (`sovereign-require-env-tag`) that evaluates and denies any resource deployment missing any of the required enterprise tags:
+  * `Environment` (e.g., `Production`)
+  * `CostCenter` (e.g., `CC-1092-IT`)
+  * `ManagedBy` (e.g., `Terraform`)
+* **Global Tag Standardization:** Supplies standard metadata across all core resource groups using Terraform `default_tags`.
 ---
+
+
 
 ### Implementation Details
 
-* **`policies.tf`** — Contains data lookups for the root management group, custom Azure Policy definitions, and management group policy assignments.
-* **`variables.tf`** — Defines `allowed_locations` (`["uksouth", "ukwest"]`) and `default_tags` applied to all managed resource groups.
-* **Policy Scoping:** Both policy assignments are targeted at `data.azurerm_management_group.root.id`, ensuring inherited enforcement across all child management groups (`connectivity`, `management`, `identity`, `landing-zones`).
+* **`policies.tf`** — Defines data lookups for the root management group, built-in location restriction assignments, custom multi-field tag policy definitions, and root-scoped assignments.
+* **`variables.tf`** — Contains `allowed_locations` (`["uksouth", "ukwest"]`) and `default_tags` map.
+* **Inherited Enforcement:** Policy assignments are bound to `data.azurerm_management_group.root.id`, ensuring full inheritance down to child management groups (`connectivity`, `management`, `identity`, `landing-zones`).
+
+
 
 
 #### Challenge Faced: Hardcoded Policy Definition ID Error
