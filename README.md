@@ -198,3 +198,69 @@ This step provisions the dedicated Workload Landing Zone for housing application
 * **`landing_zones.tf`** — Configures the Workload Landing Zone resource group, application subnet, and bi-directional VNet peering to the central Hub VNet (`network.tf`).
 * **Tagging & Compliance:** Applies mandatory enterprise tags (`Environment`, `CostCenter`, `ManagedBy`) and strictly enforces regional deployment limits (`uksouth`).
 
+---
+
+### Step 8: Continuous Integration & Deployment (CI/CD)
+
+**Overview**  
+Automated infrastructure delivery using **GitHub Actions** and **Azure Entra ID Workload Identity Federation (OIDC)**. This setup enforces Zero-Trust security by replacing long-lived client secrets with short-lived, passwordless authentication.
+
+---
+
+**Key Implementation Steps**
+
+* **Passwordless OIDC Auth:** Configured Azure Entra ID Federated Credentials to trust GitHub's token issuer (`token.actions.githubusercontent.com`) for secure, secretless authentication.
+* **RBAC & Scoping:** Assigned `Owner` permissions to the Azure AD Service Principal at the Subscription level to permit automated Terraform management.
+* **Automated Quality Checks:** Enforced `terraform fmt -check`, `init`, and `validate` within the pipeline to catch syntax and duplicate resource errors before deployment.
+* **Automated Delivery:** Configured `terraform plan` on all events and automatic `terraform apply` exclusively on merges to the `main` branch.
+
+---
+
+**Pipeline Summary (`.github/workflows/terraform.yml`)**
+
+```yaml
+name: "Terraform Azure Landing Zone CI/CD"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Format & Validate
+        run: |
+          terraform fmt -check
+          terraform init
+          terraform validate
+
+      - name: Terraform Plan & Apply
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: "true"
+        run: |
+          terraform plan -var="root_id=sovereign"
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && [ "${{ github.event_name }}" = "push" ]; then
+            terraform apply -auto-approve -var="root_id=sovereign"
+          fi

@@ -41,3 +41,9 @@ resource "azurerm_virtual_network_peering" "workload_to_hub" {
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
 }
+
+resource "azurerm_resource_group" "workload" {
+  name     = "${var.root_id}-workload-rg"
+  location = var.allowed_locations[0]
+  tags     = var.default_tags
+}
