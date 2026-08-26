@@ -15,3 +15,13 @@ variable "allowed_locations" {
   description = "List of allowed Azure regions for sovereign compliance."
   default     = ["uksouth", "ukwest"]
 }
+
+variable "default_tags" {
+  type        = map(string)
+  description = "Default enterprise tags applied to all landing zone resources."
+  default     = {
+    Environment = "Production"
+    CostCenter  = "CC-1092-IT"
+    ManagedBy   = "Terraform"
+  }
+}
