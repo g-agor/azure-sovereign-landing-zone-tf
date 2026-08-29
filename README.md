@@ -10,6 +10,24 @@ Sovereign/High Assurance Azure Landing Zone following Microsoft Cloud Adoption F
 
 ---
 
+## Summary
+
+The **Azure Sovereign Landing Zone (Terraform)** repository provides an enterprise-grade, high-assurance cloud foundation built on the Microsoft Cloud Adoption Framework (CAF). It automates the provisioning of secure hub-spoke networking, centralized logging, strict compliance policies, and identity management using modular Terraform and GitHub Actions.
+
+---
+
+## Prerequisites & Tools
+
+To deploy and maintain this infrastructure, ensure you have the following tools installed and configured:
+
+* **[Terraform CLI](https://developer.hashicorp.com/terraform/downloads)** `(>= 1.5.0)` – Infrastructure provisioning engine.
+* **[Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)** `(>= 2.50.0)` – Command-line interface to authenticate and interact with your Azure tenant.
+* **[Git](https://git-scm.com/downloads)** – Version control system for managing code and pushing workflow triggers.
+* **[Visual Studio Code](https://code.visualstudio.com/)** – Recommended IDE, along with the **HashiCorp Terraform** extension.
+* **[Azure Account & Subscription](https://azure.microsoft.com/)** – Active Azure tenant with `Owner` or `User Access Administrator` permissions at the root/Management Group level.
+
+---
+
 ## Engineering Log & Initial Setup Learnings
 
 ### 1. Workspace Context & Path Resolution (`terraform init`)
