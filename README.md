@@ -3,8 +3,9 @@
 Sovereign/High Assurance Azure Landing Zone following Microsoft Cloud Adoption Framework (CAF) automated with Terraform and GitHub Actions.
 
 ---
+
 <p align="center">
-  <img src="./architecture.png" alt="Azure Sovereign Landing Zone Architecture" width="100%">
+  <img src="architecture.png" alt="Azure Sovereign Landing Zone Architecture" width="100%">
 </p>
 
 ---
