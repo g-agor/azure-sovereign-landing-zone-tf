@@ -12,7 +12,18 @@ Sovereign/High Assurance Azure Landing Zone following Microsoft Cloud Adoption F
 
 ## Summary
 
-The **Azure Sovereign Landing Zone (Terraform)** repository provides an enterprise-grade, high-assurance cloud foundation built on the Microsoft Cloud Adoption Framework (CAF). It automates the provisioning of secure hub-spoke networking, centralized logging, strict compliance policies, and identity management using modular Terraform and GitHub Actions.
+# Azure Sovereign Landing Zone (Terraform)
+
+The **Azure Sovereign Landing Zone (Terraform)** repository provides an enterprise-grade, high-assurance cloud foundation built on the Microsoft Cloud Adoption Framework (CAF). It automates the provisioning of secure hub-and-spoke networking, centralized logging, strict compliance policies, and identity management using Terraform and GitHub Actions.
+
+---
+
+## 🏗️ Architecture & Features
+
+* **Governance & Compliance**: Enforces Microsoft Cloud Adoption Framework (CAF) compliance using Azure Policy definitions and custom Management Group hierarchies.
+* **Hub-and-Spoke Networking**: Deploys secure Virtual Networks (VNets), dedicated subnets, and explicit Network Security Groups (NSGs).
+* **Centralized Monitoring**: Sets up Log Analytics Workspaces for audit logs and diagnostic monitoring across all core resources.
+* **Automated Security CI**: Integrated GitHub Actions workflow utilizing Checkov static analysis to scan HCL code for security and compliance misconfigurations on every push or pull request.
 
 ---
 
@@ -238,6 +249,7 @@ Automated infrastructure delivery using **GitHub Actions** and **Azure Entra ID 
 * **Passwordless OIDC Auth:** Configured Azure Entra ID Federated Credentials to trust GitHub's token issuer (`token.actions.githubusercontent.com`) for secure, secretless authentication.
 * **RBAC & Scoping:** Assigned `Owner` permissions to the Azure AD Service Principal at the Subscription level to permit automated Terraform management.
 * **Automated Quality Checks:** Enforced `terraform fmt -check`, `init`, and `validate` within the pipeline to catch syntax and duplicate resource errors before deployment.
+* **Security Scanning (Checkov):** Integrated Checkov static analysis to scan Terraform HCL files for security vulnerabilities, compliance breaches, and resource misconfigurations.
 * **Automated Delivery:** Configured `terraform plan` on all events and automatic `terraform apply` exclusively on merges to the `main` branch.
 
 ---
