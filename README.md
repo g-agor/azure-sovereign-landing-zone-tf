@@ -18,7 +18,7 @@ The **Azure Sovereign Landing Zone (Terraform)** repository provides an enterpri
 
 ---
 
-## 🏗️ Architecture & Features
+## Architecture & Features
 
 * **Governance & Compliance**: Enforces Microsoft Cloud Adoption Framework (CAF) compliance using Azure Policy definitions and custom Management Group hierarchies.
 * **Hub-and-Spoke Networking**: Deploys secure Virtual Networks (VNets), dedicated subnets, and explicit Network Security Groups (NSGs).
