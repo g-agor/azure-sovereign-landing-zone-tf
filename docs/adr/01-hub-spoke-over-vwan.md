@@ -1,4 +1,4 @@
-# ADR-0001: Hub-and-Spoke Topology over Azure Virtual WAN
+# ADR-01: Hub-and-Spoke Topology over Azure Virtual WAN
 
 ## Status
 Accepted

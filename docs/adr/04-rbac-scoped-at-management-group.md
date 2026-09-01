@@ -1,4 +1,4 @@
-# ADR-0004: RBAC Bound at Management Group Scope (not Subscription)
+# ADR-04: RBAC Bound at Management Group Scope (not Subscription)
 
 ## Status
 Accepted, with a known implementation gap (see below)

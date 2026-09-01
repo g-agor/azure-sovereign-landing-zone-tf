@@ -1,4 +1,4 @@
-# ADR-0003: Policy-as-Code Enforcement via Deny Effect (not Audit)
+# ADR-03: Policy-as-Code Enforcement via Deny Effect (not Audit)
 
 ## Status
 Accepted

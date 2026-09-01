@@ -1,4 +1,4 @@
-# ADR-0002: OIDC Workload Identity Federation over Service Principal Secrets
+# ADR-02: OIDC Workload Identity Federation over Service Principal Secrets
 
 ## Status
 Accepted

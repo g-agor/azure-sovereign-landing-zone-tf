@@ -1,4 +1,4 @@
-# ADR-0005: Add Checkov Static Analysis (Soft-Fail) and Resolve Its First Finding
+# ADR-05: Add Checkov Static Analysis (Soft-Fail) and Resolve Its First Finding
 
 ## Status
 Accepted, with known gaps (see below)
