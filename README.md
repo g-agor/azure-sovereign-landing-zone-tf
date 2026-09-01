@@ -25,6 +25,10 @@ The **Azure Sovereign Landing Zone (Terraform)** repository provides an enterpri
 * **Centralized Monitoring**: Sets up Log Analytics Workspaces for audit logs and diagnostic monitoring across all core resources.
 * **Automated Security CI**: Integrated GitHub Actions workflow utilizing Checkov static analysis to scan HCL code for security and compliance misconfigurations on every push or pull request.
 
+## Architecture Decision Records (ADRs)
+
+Key architectural and design choices for this repository are documented using ADRs in the [`docs/adr/`](./docs/adr/) directory.
+
 ---
 
 ## Prerequisites & Tools
