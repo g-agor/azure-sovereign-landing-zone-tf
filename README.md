@@ -61,8 +61,6 @@ To deploy and maintain this infrastructure, ensure you have the following tools 
 * **Resolution & Architectural Takeaway:** Standardized code layout by breaking out modular file responsibilities. Created a dedicated `backend.tf` file containing the `terraform { backend "azurerm" { ... } }` declaration, keeping `versions.tf` focused exclusively on provider constraints. Re-initialized Terraform (`terraform init`) to successfully migrate state to remote Azure Blob Storage with locking enabled.
 ---
 
----
-
 ## Step 2: Management Group Hierarchy (CAF Alignment)
 
 This layer implements a multi-tier Azure Management Group structure aligned with the **Microsoft Cloud Adoption Framework (CAF)** Enterprise-Scale architecture. It establishes clear organizational boundaries for policy inheritance, access control (RBAC), and sovereign workload isolation.
