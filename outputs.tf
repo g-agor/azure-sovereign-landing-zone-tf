@@ -1,17 +1,17 @@
 # Output Management Group IDs
 output "root_management_group_id" {
   description = "The ID of the Root Management Group"
-  value       = data.azurerm_management_group.root.id
+  value       = azurerm_management_group.root.id
 }
 
 output "connectivity_management_group_id" {
   description = "The ID of the Connectivity Management Group"
-  value       = data.azurerm_management_group.connectivity.id
+  value       = azurerm_management_group.connectivity.id
 }
 
 output "management_management_group_id" {
   description = "The ID of the Management Management Group"
-  value       = data.azurerm_management_group.management.id
+  value       = azurerm_management_group.management.id
 }
 
 # Output Active Caller Identity Details

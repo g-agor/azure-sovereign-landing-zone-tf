@@ -1,8 +1,3 @@
-# Fetch the Root Management Group
-data "azurerm_management_group" "root" {
-  name = "${var.root_id}-root"
-}
-
 # Fetch Built-in "Allowed locations" Policy Definition
 data "azurerm_policy_definition" "allowed_locations" {
   display_name = "Allowed locations"
@@ -11,7 +6,7 @@ data "azurerm_policy_definition" "allowed_locations" {
 # 1. Policy Assignment: Restrict Allowed Locations to UK Regions
 resource "azurerm_management_group_policy_assignment" "allowed_locations" {
   name                 = "allowed-locations-uk"
-  management_group_id  = data.azurerm_management_group.root.id
+  management_group_id  = azurerm_management_group.root.id
   policy_definition_id = data.azurerm_policy_definition.allowed_locations.id
   description          = "Enforces sovereign data residency by restricting resource deployments strictly to UK regions."
   display_name         = "Allowed Locations (UK Sovereign Only)"
@@ -30,7 +25,7 @@ resource "azurerm_policy_definition" "require_tag_environment" {
   mode                = "Indexed"
   display_name        = "Require Mandatory Enterprise Tags"
   description         = "Denies creation of resources missing Environment, CostCenter, or ManagedBy tags."
-  management_group_id = data.azurerm_management_group.root.id
+  management_group_id = azurerm_management_group.root.id
 
   metadata = jsonencode({
     category = "Cost & Governance"
@@ -62,7 +57,7 @@ resource "azurerm_policy_definition" "require_tag_environment" {
 # 3. Policy Assignment: Enforce Mandatory Tags at Sovereign Root
 resource "azurerm_management_group_policy_assignment" "require_env_tag" {
   name                 = "env-tag-assignment"
-  management_group_id  = data.azurerm_management_group.root.id
+  management_group_id  = azurerm_management_group.root.id
   policy_definition_id = azurerm_policy_definition.require_tag_environment.id
   display_name         = "Enforce Mandatory Enterprise Tags"
 }
